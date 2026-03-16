@@ -24,6 +24,15 @@ export type CategoryDefinition = {
   nodes: NodeDefinition[]
 }
 
+export function findNodeDefinition(
+  type: string
+): { node: NodeDefinition; category: CategoryDefinition } | undefined {
+  for (const category of CATEGORIES) {
+    const node = category.nodes.find((n) => n.type === type)
+    if (node) return { node, category }
+  }
+}
+
 export const CATEGORIES: CategoryDefinition[] = [
   {
     label: 'Data',

@@ -43,7 +43,14 @@ export default function NodeSidebar() {
                   {category.nodes.map((node) => {
                     const Icon = node.icon
                     return (
-                      <div key={node.type} className="node-item">
+                      <div
+                        key={node.type}
+                        className="node-item"
+                        draggable
+                        onDragStart={(e) =>
+                          e.dataTransfer.setData('nodeType', node.type)
+                        }
+                      >
                         <Icon
                           className="node-item__icon"
                           size={14}

@@ -1,10 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { ReactFlow, Background, BackgroundVariant } from '@xyflow/react'
-import '@xyflow/react/dist/style.css'
 import { PanelLeft } from 'lucide-react'
 import NodeSidebar from '@/components/NodeSidebar'
+import Canvas from '@/components/Canvas'
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -20,14 +19,7 @@ export default function Home() {
         >
           <PanelLeft size={16} />
         </button>
-        <ReactFlow>
-          <Background
-            variant={BackgroundVariant.Lines}
-            color="#e4e4e4fb"
-            gap={24}
-            lineWidth={1}
-          />
-        </ReactFlow>
+        <Canvas />
       </div>
     </div>
   )
