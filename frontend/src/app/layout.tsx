@@ -3,7 +3,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'LoopLens',
-  description: 'Visual game economy designer and simulator',
+  description: 'Visual node-based editor for game designers',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
