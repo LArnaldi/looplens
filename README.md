@@ -113,18 +113,7 @@ cd engine && dotnet test
 
 ## Changelog
 
-<!--
-  CHANGELOG FORMAT:
-  ## [vX.Y.Z] — YYYY-MM-DD
-  ### Added / Changed / Fixed / Removed
-  - item
--->
-
-## [Unreleased]
-
-### Added
-- Initial project scaffold (Next.js + .NET 8)
-- README and repository structure
+See [CHANGELOG.md](CHANGELOG.md) for the full history.
 
 ---
 
