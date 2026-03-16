@@ -1,0 +1,23 @@
+# ── Node / Next.js ──────────────────────────────────────────────
+node_modules/
+.next/
+out/
+.env.local
+.env.*.local
+frontend/.turbo
+
+# ── .NET ────────────────────────────────────────────────────────
+engine/**/bin/
+engine/**/obj/
+engine/**/*.user
+engine/**/*.suo
+*.nupkg
+
+# ── OS ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Editor ──────────────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.swp

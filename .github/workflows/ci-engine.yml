@@ -1,0 +1,33 @@
+name: CI — Engine
+
+on:
+  push:
+    branches: [main, develop]
+    paths: ['engine/**']
+  pull_request:
+    branches: [main, develop]
+    paths: ['engine/**']
+
+jobs:
+  build-and-test:
+    name: Build · Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: engine
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity normal
