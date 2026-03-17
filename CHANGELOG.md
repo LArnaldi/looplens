@@ -9,6 +9,21 @@ Versioning: [Semantic Versioning](https://semver.org/)
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-03-17
+
+### Added
+- `ResourceEdge` custom edge: solid orange (`#f97316`, 2px) for resource connections
+- `SignalEdge` custom edge: dashed blue (`#3b82f6`, 2px, `6 3` dash pattern) for signal/control connections
+- Automatic edge type assignment on connect: reads `sourceHandle` prefix to pick `resource` or `signal` type
+- Connection validation: only same-type handles can be connected (resource↔resource, signal↔signal)
+- MiniMap (zoomable, pannable) and Controls panel on canvas
+- Snap-to-grid (16×16) for node placement
+- Keyboard shortcuts popover (? button, top-right panel)
+- Node deletion via Delete/Backspace key, context menu (right-click), and ✕ button on hover
+
+### Changed
+- Canvas now registers `edgeTypes` for resource and signal connections
+
 ## [0.2.0] — 2026-03-17
 
 ### Added
