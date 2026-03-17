@@ -8,6 +8,7 @@ import {
   BackgroundVariant,
   useNodesState,
   useReactFlow,
+  type Connection,
   type Node,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
@@ -22,6 +23,12 @@ const nodeTypes = { nodeCard: NodeCardFlow }
 function CanvasInner() {
   const [nodes, setNodes, onNodesChange] = useNodesState<NodeCardNode>([])
   const { screenToFlowPosition } = useReactFlow()
+
+  const isValidConnection = useCallback((connection: Connection) => {
+    const sourceType = connection.sourceHandle?.split('-')[0]
+    const targetType = connection.targetHandle?.split('-')[0]
+    return sourceType === targetType
+  }, [])
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault()
@@ -66,6 +73,7 @@ function CanvasInner() {
       nodeTypes={nodeTypes}
       onDrop={onDrop}
       onDragOver={onDragOver}
+      isValidConnection={isValidConnection}
     >
       <Background
         variant={BackgroundVariant.Lines}
