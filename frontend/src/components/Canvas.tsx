@@ -6,6 +6,9 @@ import {
   ReactFlowProvider,
   Background,
   BackgroundVariant,
+  MiniMap,
+  Controls,
+  Panel,
   addEdge,
   useNodesState,
   useEdgesState,
@@ -17,21 +20,28 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import NodeCardFlow from './NodeCardFlow'
+import ResourceEdge from './ResourceEdge'
+import SignalEdge from './SignalEdge'
 import { findNodeDefinition } from '@/lib/nodes'
 import type { NodeCardProps } from './NodeCard'
 
 type NodeCardNode = Node<NodeCardProps>
 
 const nodeTypes = { nodeCard: NodeCardFlow }
+const edgeTypes = { resource: ResourceEdge, signal: SignalEdge }
 
 function CanvasInner() {
   const [nodes, setNodes, onNodesChange] = useNodesState<NodeCardNode>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
   const [contextMenu, setContextMenu] = useState<{ nodeId: string; x: number; y: number } | null>(null)
+  const [shortcutsOpen, setShortcutsOpen] = useState(false)
   const { screenToFlowPosition, deleteElements } = useReactFlow()
 
   const onConnect = useCallback(
-    (connection: Connection) => setEdges((prev) => addEdge(connection, prev)),
+    (connection: Connection) => {
+      const edgeType = connection.sourceHandle?.startsWith('resource') ? 'resource' : 'signal'
+      setEdges((prev) => addEdge({ ...connection, type: edgeType }, prev))
+    },
     [setEdges]
   )
 
@@ -40,7 +50,10 @@ function CanvasInner() {
     setContextMenu({ nodeId: node.id, x: event.clientX, y: event.clientY })
   }, [])
 
-  const onPaneClick = useCallback(() => setContextMenu(null), [])
+  const onPaneClick = useCallback(() => {
+    setContextMenu(null)
+    setShortcutsOpen(false)
+  }, [])
 
   const isValidConnection = useCallback((connection: Edge | Connection) => {
     const sourceType = connection.sourceHandle?.split('-')[0]
@@ -93,12 +106,15 @@ function CanvasInner() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onDrop={onDrop}
         onDragOver={onDragOver}
         onNodeContextMenu={onNodeContextMenu}
         onPaneClick={onPaneClick}
         isValidConnection={isValidConnection}
         deleteKeyCode={['Delete', 'Backspace']}
+        snapToGrid={true}
+        snapGrid={[16, 16]}
       >
         <Background
           variant={BackgroundVariant.Lines}
@@ -106,6 +122,28 @@ function CanvasInner() {
           gap={24}
           lineWidth={1}
         />
+        <MiniMap zoomable pannable />
+        <Controls />
+        <Panel position="top-right">
+          <button
+            className="canvas-help-btn"
+            onClick={() => setShortcutsOpen((v) => !v)}
+            aria-label="Keyboard shortcuts"
+          >
+            ?
+          </button>
+          {shortcutsOpen && (
+            <div className="canvas-shortcuts-popover">
+              <p className="canvas-shortcuts-title">Keyboard shortcuts</p>
+              <ul className="canvas-shortcuts-list">
+                <li><span className="canvas-shortcuts-key">Del / Backspace</span> elimina nodo selezionato</li>
+                <li><span className="canvas-shortcuts-key">Ctrl + Scroll</span> zoom</li>
+                <li><span className="canvas-shortcuts-key">Right-click</span> menu contestuale</li>
+                <li><span className="canvas-shortcuts-key">Drag from sidebar</span> aggiungi nodo</li>
+              </ul>
+            </div>
+          )}
+        </Panel>
       </ReactFlow>
       {contextMenu && (
         <ul
