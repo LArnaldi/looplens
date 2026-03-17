@@ -197,6 +197,12 @@ body {
   background: #fef2f2;
 }
 
+/* Edge styles
+   Stili definiti inline nei componenti custom:
+   - ResourceEdge: linea solid, colore #f97316 (arancione), strokeWidth 2
+   - SignalEdge:   linea dashed (6 3), colore #3b82f6 (blu), strokeWidth 2
+*/
+
 /* Node Handles */
 .handle--resource.react-flow__handle {
   width: 10px;

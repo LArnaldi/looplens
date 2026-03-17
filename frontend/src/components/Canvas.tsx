@@ -20,12 +20,15 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import NodeCardFlow from './NodeCardFlow'
+import ResourceEdge from './ResourceEdge'
+import SignalEdge from './SignalEdge'
 import { findNodeDefinition } from '@/lib/nodes'
 import type { NodeCardProps } from './NodeCard'
 
 type NodeCardNode = Node<NodeCardProps>
 
 const nodeTypes = { nodeCard: NodeCardFlow }
+const edgeTypes = { resource: ResourceEdge, signal: SignalEdge }
 
 function CanvasInner() {
   const [nodes, setNodes, onNodesChange] = useNodesState<NodeCardNode>([])
@@ -35,7 +38,10 @@ function CanvasInner() {
   const { screenToFlowPosition, deleteElements } = useReactFlow()
 
   const onConnect = useCallback(
-    (connection: Connection) => setEdges((prev) => addEdge(connection, prev)),
+    (connection: Connection) => {
+      const edgeType = connection.sourceHandle?.startsWith('resource') ? 'resource' : 'signal'
+      setEdges((prev) => addEdge({ ...connection, type: edgeType }, prev))
+    },
     [setEdges]
   )
 
@@ -100,6 +106,7 @@ function CanvasInner() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onDrop={onDrop}
         onDragOver={onDragOver}
         onNodeContextMenu={onNodeContextMenu}
