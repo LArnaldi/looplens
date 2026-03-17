@@ -6,9 +6,12 @@ import {
   ReactFlowProvider,
   Background,
   BackgroundVariant,
+  addEdge,
   useNodesState,
+  useEdgesState,
   useReactFlow,
   type Connection,
+  type Edge,
   type Node,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
@@ -22,7 +25,13 @@ const nodeTypes = { nodeCard: NodeCardFlow }
 
 function CanvasInner() {
   const [nodes, setNodes, onNodesChange] = useNodesState<NodeCardNode>([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
   const { screenToFlowPosition } = useReactFlow()
+
+  const onConnect = useCallback(
+    (connection: Connection) => setEdges((prev) => addEdge(connection, prev)),
+    [setEdges]
+  )
 
   const isValidConnection = useCallback((connection: Connection) => {
     const sourceType = connection.sourceHandle?.split('-')[0]
@@ -69,7 +78,10 @@ function CanvasInner() {
   return (
     <ReactFlow
       nodes={nodes}
+      edges={edges}
       onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onConnect={onConnect}
       nodeTypes={nodeTypes}
       onDrop={onDrop}
       onDragOver={onDragOver}
