@@ -138,6 +138,24 @@ body {
   white-space: nowrap;
 }
 
+/* Node Handles */
+.handle--resource.react-flow__handle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #f97316;
+  border: 2px solid #fff;
+}
+
+.handle--signal.react-flow__handle {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  transform: translateY(-50%) rotate(45deg);
+  background: #3b82f6;
+  border: 2px solid #fff;
+}
+
 /* Sidebar toggle button */
 .sidebar-toggle {
   position: absolute;
