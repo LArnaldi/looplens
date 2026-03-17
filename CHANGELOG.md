@@ -9,6 +9,18 @@ Versioning: [Semantic Versioning](https://semver.org/)
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-03-17
+
+### Added
+- Infinite canvas with React Flow and subtle grid background
+- Node sidebar with 9 nodes across 7 categories (Data, Flow, Storage, Logic, Event, Time, Meta), collapsible per category
+- Toggle button to show/hide the sidebar
+- Generic `NodeCard` component (icon, label, category color accent)
+- Drag-and-drop from sidebar to canvas: drops a `NodeCard` populated with the correct node data
+- `src/lib/nodes.ts` as single source of truth for node and category definitions
+- GitHub Actions CI for frontend (lint → test → build) and engine; release workflow on tag push
+- Vitest setup with jsdom, ESLint flat config
+
 ## [0.1.0] — 2026-03-16
 
 ### Added

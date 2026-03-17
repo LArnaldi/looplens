@@ -1,14 +1,19 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import {
   ReactFlow,
   ReactFlowProvider,
   Background,
   BackgroundVariant,
+  addEdge,
   useNodesState,
+  useEdgesState,
   useReactFlow,
+  type Connection,
+  type Edge,
   type Node,
+  type NodeMouseHandler,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import NodeCardFlow from './NodeCardFlow'
@@ -21,7 +26,27 @@ const nodeTypes = { nodeCard: NodeCardFlow }
 
 function CanvasInner() {
   const [nodes, setNodes, onNodesChange] = useNodesState<NodeCardNode>([])
-  const { screenToFlowPosition } = useReactFlow()
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
+  const [contextMenu, setContextMenu] = useState<{ nodeId: string; x: number; y: number } | null>(null)
+  const { screenToFlowPosition, deleteElements } = useReactFlow()
+
+  const onConnect = useCallback(
+    (connection: Connection) => setEdges((prev) => addEdge(connection, prev)),
+    [setEdges]
+  )
+
+  const onNodeContextMenu = useCallback<NodeMouseHandler>((event, node) => {
+    event.preventDefault()
+    setContextMenu({ nodeId: node.id, x: event.clientX, y: event.clientY })
+  }, [])
+
+  const onPaneClick = useCallback(() => setContextMenu(null), [])
+
+  const isValidConnection = useCallback((connection: Edge | Connection) => {
+    const sourceType = connection.sourceHandle?.split('-')[0]
+    const targetType = connection.targetHandle?.split('-')[0]
+    return sourceType === targetType
+  }, [])
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault()
@@ -60,20 +85,45 @@ function CanvasInner() {
   )
 
   return (
-    <ReactFlow
-      nodes={nodes}
-      onNodesChange={onNodesChange}
-      nodeTypes={nodeTypes}
-      onDrop={onDrop}
-      onDragOver={onDragOver}
-    >
-      <Background
-        variant={BackgroundVariant.Lines}
-        color="#e4e4e4fb"
-        gap={24}
-        lineWidth={1}
-      />
-    </ReactFlow>
+    <>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        nodeTypes={nodeTypes}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+        onNodeContextMenu={onNodeContextMenu}
+        onPaneClick={onPaneClick}
+        isValidConnection={isValidConnection}
+        deleteKeyCode={['Delete', 'Backspace']}
+      >
+        <Background
+          variant={BackgroundVariant.Lines}
+          color="#e4e4e4fb"
+          gap={24}
+          lineWidth={1}
+        />
+      </ReactFlow>
+      {contextMenu && (
+        <ul
+          className="context-menu"
+          style={{ top: contextMenu.y, left: contextMenu.x }}
+        >
+          <li
+            className="context-menu__item context-menu__item--danger"
+            onClick={() => {
+              deleteElements({ nodes: [{ id: contextMenu.nodeId }] })
+              setContextMenu(null)
+            }}
+          >
+            Elimina nodo
+          </li>
+        </ul>
+      )}
+    </>
   )
 }
 
